@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email de Validação</title>
+    <style>
+        html {
+            background-color: #1c1c1c;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: aliceblue;
+            width: 40vw;
+            height: 90vh;
+            border-radius: 10px;
+        }
+        div {
+            font-size: 20px;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            display: flex;
+            align-items: center;
+        }
+        p {
+            margin-right: 10px;
+        }
+        span {
+            border: #e4e4e7 1px solid;
+            padding: 5px;
+            border-radius: 4px;
+            font-family: fantasy;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to AuthenricatioJS</h1>
+    <section>
+        <div> 
+            <p>Your code is:</p>
+            <span><%= validationCode[0] %></span>-<span><%= validationCode[1] %></span>-<span><%= validationCode[2] %></span>-<span><%= validationCode[3] %></span>-<span><%= validationCode[4] %></span>-<span><%= validationCode[5] %></span> 
+        </div>
+    </section>
+</body>
+</html>
