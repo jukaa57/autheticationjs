@@ -1,4 +1,4 @@
-import { sigUpCredentials } from './shared/interfaces';
+import { signInCredentials, signUpCredentials } from './shared/interfaces';
 import {app} from './server';
 import { createSignUp } from './signUp';
 import bodyParser from 'body-parser'
@@ -6,6 +6,7 @@ import { createValidateCode, sendEmailSignUpValidation, validateEmail, validateP
 import { userExists } from './actions';
 import { v4 as uuidv4 } from 'uuid';
 import { redisClient } from './shared/connections';
+import { handleSignIn } from './signIn';
 
 export async function Routes() {
     const id = uuidv4();
@@ -15,7 +16,7 @@ export async function Routes() {
     });
 
     app.post('/signup', async (req, res, next) => {
-        const {username, email, password}: sigUpCredentials = req.body
+        const {username, email, password}: signUpCredentials = req.body
         if(!username || !password || !email) {
             return res.status(500).send('Bad Request \n username, email and password is required')
         }
@@ -34,12 +35,12 @@ export async function Routes() {
         createValidateCode()
         const validationCode = await redisClient.get('validationCode');
 
-        // let send = sendEmailSignUpValidation(email, validationCode)
-        // if(send === 200) {
+        let send = sendEmailSignUpValidation(email, validationCode)
+        if(send === 200) {
             return res.status(200).send('Send code to email!!')
-        // } else {
-        //     return res.status(500).send('Error !!')
-        // }
+        } else {
+            return res.status(500).send('Error !!')
+        }
     });
     
     app.get('/validate/:code', async (req, res) => {
@@ -84,7 +85,23 @@ export async function Routes() {
         }
         createValidateCode()
         const validationCode = await redisClient.get('validationCode');
-        // // sendEmailSignUpValidation(JSON.parse(credential).email, validationCode)
+        sendEmailSignUpValidation(JSON.parse(credential).email, validationCode)
         return res.status(200).send('Resend successfully')
     });
+
+    app.post('/signin', async(req, res) => {
+        const {email, password}: signInCredentials = req.body
+        if(!password || !email) {
+            return res.status(500).send('Bad Request \n email and password is required')
+        }
+        if(!validateEmail(email)) {
+            return res.status(400).send('Bad Request \n email invalid')
+        }
+        const isExists = await userExists(email)
+        if(!isExists) {
+            return res.status(400).send('Bad Request \n Account not exisits')
+        }
+        handleSignIn({email, password})
+
+    })
 }

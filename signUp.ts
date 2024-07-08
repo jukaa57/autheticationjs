@@ -1,9 +1,9 @@
-import { sigUpCredentials } from "./shared/interfaces";
+import { signUpCredentials } from "./shared/interfaces";
 import crypto from "crypto";
 import cryptoJs from 'crypto-js'
 import { createAccout } from "./actions";
 
-export function createSignUp(data: sigUpCredentials) {
+export function createSignUp(data: signUpCredentials) {
     const hash = HashConstructor(data.password)
     const account = {...data, password: hash.hashPassword, saltKey: hash.saltKey}
     
