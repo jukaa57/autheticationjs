@@ -1,7 +1,6 @@
+import { prisma } from './shared/connections';
 import { sigUpCredentials } from './shared/interfaces.d';
-import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient()
 
 export async function userExists(email: string) {
     const userExists = await prisma.user.findFirst({

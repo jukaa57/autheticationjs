@@ -1,18 +1,23 @@
 import { Resend } from 'resend';
 import express from 'express';
 import { Routes } from './routes';
+import { redisConnect } from './shared/connections';
+
 
 const key_resend = process.env.API_KEY_RESEND
 // const resend = new Resend(key_resend);
 
+
 export const app = express();
 const PORT = 3000
 
-app.listen(PORT, () => {
+app.listen(PORT, async() => {
   console.log(`Servidor rodando na porta http://localhost:${PORT}`);
 })
 app.use(express.json()) 
-Routes()
+
+redisConnect()
+Routes();
 // async function sendEmail() {
 //   try {
 //     const data = await resend.emails.send({
