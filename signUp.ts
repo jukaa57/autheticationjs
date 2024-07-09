@@ -6,7 +6,6 @@ import { createAccout } from "./actions";
 export function createSignUp(data: signUpCredentials) {
     const hash = HashConstructor(data.password)
     const account = {...data, password: hash.hashPassword, saltKey: hash.saltKey}
-    
     createAccout(account).then((res) => res).catch(err => err.message)
 }
 

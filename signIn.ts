@@ -1,24 +1,18 @@
 import { signInCredentials } from "./shared/interfaces";
-import crypto from "crypto";
 import cryptoJs from 'crypto-js'
-import { createAccout, getHashPass } from "./actions";
+import { getHashPass } from "./actions";
 
 export async function handleSignIn(data: signInCredentials) {
-    const getHash = await getHashPass(data)
-    
-    const hash = HashCompator(data.password, getHash)
-    // const account = {...data, password: hash.hashPassword, saltKey: hash.saltKey}
-    console.log(hash)
-    // crea1teAccout(account).then((res) => res).catch(err => err.message)
+    const getHash = await getHashPass(data)   
+    const hash = HashComparator(data.password, getHash)
+    return hash
 }
 
-async function HashCompator(password: string, data: any ) {
-
-    let concat = password + data.saltKey
+async function HashComparator(password: string, data: any ) {
+    let concat = password + data.saltkey
     let hash = cryptoJs.SHA256(concat)
-    if(hash.toString(cryptoJs.enc.Hex) !== data.hashPassword) {
+    if(hash.toString(cryptoJs.enc.Hex) !== data.hashpassword) {
         return false
     }
     return true
-
 }

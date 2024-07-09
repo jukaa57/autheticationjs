@@ -3,26 +3,18 @@ import path from 'path';
 import { Resend } from 'resend';
 import { redisClient } from "./connections";
 
-
-
 const key_resend = process.env.API_KEY_RESEND
 const resend = new Resend(key_resend);
 
 export function validatePassword(password: string) {
-    if (password.length < 8)
-        return false;
-
+    if (password.length < 8) return {pass: false, error: "Password must be at least min 8 characters"};
+    
     const numStr =  /\d/ 
-    if(!numStr.test(password)) {
-        console.error("password not contains number");
-        return false;
-    }
+    if(!numStr.test(password)) return {pass: false, error: "Password not contains number"};
+
     const format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-    if(!format.test(password)) {
-        console.error("password not contains special characters");
-        return false;
-    }
-    return true;
+    if(!format.test(password)) return {pass: false, error: "Password not contains special characters"};
+    return {pass: true};
 }
 
 export function validateEmail(email: string) {
@@ -60,7 +52,7 @@ export function sendEmailSignUpValidation(email: string, validationCode: string 
               subject: 'Hello World',
               html: html
             });
-            console.log(data);
+            // console.log(data);
           } catch (error) {
             console.error(error);
             return

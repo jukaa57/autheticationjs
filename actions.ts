@@ -32,13 +32,4 @@ export async function getHashPass(data: signInCredentials) {
         }
     })
     return hash
-
-    // await prisma.user.create({
-    //     data: {
-    //         username: data.username,
-    //         email: data.email,
-    //         hashpassword: data.password,
-    //         saltkey: data.saltKey as string,
-    //     },
-    // })
 }
