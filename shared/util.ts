@@ -37,7 +37,7 @@ export async function cleanValidateCode() {
 }
 
 export function sendEmailSignUpValidation(email: string, validationCode: string | null): number {
-    let responseEmail: number = 200
+    let responseEmail: number = 202
 
     ejs.renderFile(path.join(__dirname, '../views', 'welcome.ejs'), { validationCode: validationCode }, (err: any, html: any) => {
         if (err || !validationCode) {
@@ -61,3 +61,5 @@ export function sendEmailSignUpValidation(email: string, validationCode: string 
     });
     return responseEmail
 }
+
+export const now = new Date().toDateString();

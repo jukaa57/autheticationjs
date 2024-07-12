@@ -6,6 +6,7 @@ export interface signUpCredentials  {
 }
 
 export interface signInCredentials  {
+    id?: string 
     email: string 
     password: string
     saltKey?: string

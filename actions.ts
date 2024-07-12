@@ -3,7 +3,7 @@ import { signInCredentials, signUpCredentials } from './shared/interfaces.d';
 
 
 export async function userExists(email: string) {
-    const userExists = await prisma.user.findFirst({
+    const userExists = await prisma.users.findFirst({
         where: {
             email: email
         }
@@ -12,7 +12,7 @@ export async function userExists(email: string) {
 }
 
 export async function createAccout(data: signUpCredentials) {
-    await prisma.user.create({
+    await prisma.users.create({
         data: {
             username: data.username,
             email: data.email,
@@ -22,14 +22,20 @@ export async function createAccout(data: signUpCredentials) {
     })
 }
 
-export async function getHashPass(data: signInCredentials) {
-    const hash = await prisma.user.findFirst({
+export async function getAccountFull(data: signInCredentials) {
+    const account = await prisma.users.findFirst({
         where: {
             email: data.email
-        }, select: {
-            hashpassword: true,
-            saltkey: true
         }
     })
-    return hash
+    return account
+}
+
+export async function setAccessToken(data: signInCredentials, accessToken: string) {
+    await prisma.accessToken.create({
+        data: {
+            userId: data.id as string,
+            token: accessToken
+        },
+    })
 }

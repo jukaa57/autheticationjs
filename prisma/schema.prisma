@@ -13,11 +13,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id            Int      @id @default(autoincrement())
-  email         String   @unique
-  username      String?
-  hashpassword  String
-  saltkey       String
-  created_at    DateTime  @default(now())
+model Users {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  username     String?
+  hashpassword String
+  saltkey      String
+  created_at   DateTime      @default(now())
+  twofactors   String?
+  AccessToken  AccessToken[]
+}
+
+model AccessToken {
+  id         Int      @id @default(autoincrement())
+  user       Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  token      String
+  validate_at DateTime @default(now())
 }

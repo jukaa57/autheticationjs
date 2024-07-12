@@ -5,7 +5,7 @@ import { createValidateCode, sendEmailSignUpValidation, validateEmail, validateP
 import { userExists } from './actions';
 import { v4 as uuidv4 } from 'uuid';
 import { redisClient } from './shared/connections';
-import { handleSignIn } from './signIn';
+import { accessTokenCreator, handleSignIn } from './signIn';
 
 export async function Routes() {
     const id = uuidv4();
@@ -28,7 +28,7 @@ export async function Routes() {
         const validationCode = await redisClient.get('validationCode');
         let send = sendEmailSignUpValidation(email, validationCode)
 
-        if(send === 200) return res.status(200).send('Send code to email!!')
+        if(send === 202) return res.status(202).send('Send code to email!!')
         else return res.status(500).send('Error !!')
     });
     
@@ -82,7 +82,43 @@ export async function Routes() {
         if(!isExists) return res.status(400).send('Bad Request \n Account not exisits')
         
         const login = await handleSignIn({email, password})
-        if(!login) return res.status(500).send('Bad Request \n Login failed')
-        return res.status(200).send('Access Successfully')
+        if(login == 200 ) return res.status(200).send('Access Successfully')
+        else if(login == 202) return res.status(202).send('Send code to email!!')
+        else return res.status(500).send('Bad Request \n Login failed')
     })
+
+    app.get('/signin/validate/:code', async (req, res) => {
+        const paramsCode = req.params.code
+        const validateCode = await redisClient.get('validationCode')
+        // Check if code is exipired
+        if(!validateCode) return res.status(500).send('code expired!!\n resend a new code!')
+
+        // Check if code is valid
+        switch(paramsCode) {
+            case 'error':
+                res.status(500).send('Invalid code!')
+                res.end()
+                break
+            case undefined:
+                res.status(500).send('Invalid code!')
+                res.end()
+                break
+            case null:
+                res.status(500).send('Invalid code!')
+                res.end()
+                break
+        }
+        if(paramsCode === validateCode ) {
+            // NEED to change this key parameter
+            const credential = JSON.stringify(await redisClient.hGetAll(`signin:${paramsCode}`), null, 2)
+            if(!credential) return res.status(500).send('Error fetching credential')
+            let data = JSON.parse(credential)
+
+            accessTokenCreator(data)
+            return res.status(200).send('Account successfully')
+        } else {
+            res.status(500).send('Error: this code is invalid')
+            res.end()
+        }
+    });
 }
