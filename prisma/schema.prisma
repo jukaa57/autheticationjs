@@ -9,25 +9,34 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
-model Users {
-  id           String        @id @default(cuid())
-  email        String        @unique
-  username     String?
+model Auth {
+  id           String    @id @default(cuid())
+  email        String    @unique
   hashpassword String
   saltkey      String
-  created_at   DateTime      @default(now())
+  created_at   DateTime  @default(now())
   twofactors   String?
-  AccessToken  AccessToken[]
+  Session      Session[]
+  update_at    DateTime?
 }
 
-model AccessToken {
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  username  String?
+  profile   String?
+  created_at   DateTime      @default(now())
+  update_at    DateTime?
+}
+
+model Session {
   id         Int      @id @default(autoincrement())
-  user       Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String
-  token      String
+  auth       Auth    @relation(fields: [authId], references: [id], onDelete: Cascade)
+  authId      String
+  token       String
   validate_at DateTime @default(now())
 }
