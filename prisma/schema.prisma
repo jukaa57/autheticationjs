@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:./dev.db"
 }
 
 model Auth {
@@ -21,6 +21,7 @@ model Auth {
   created_at   DateTime  @default(now())
   twofactors   String?
   Session      Session[]
+  User         User[]
   update_at    DateTime?
 }
 
@@ -29,6 +30,8 @@ model User {
   email     String     @unique
   username  String?
   profile   String?
+  auth       Auth    @relation(fields: [authId], references: [id], onDelete: Cascade)
+  authId      String 
   created_at   DateTime      @default(now())
   update_at    DateTime?
 }

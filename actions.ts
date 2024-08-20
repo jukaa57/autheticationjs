@@ -1,41 +1,51 @@
 import { prisma } from './shared/connections';
 import { signInCredentials, signUpCredentials } from './shared/interfaces.d';
 
-
 export async function userExists(email: string) {
-    const userExists = await prisma.users.findFirst({
-        where: {
-          email: email
-        }
-    })
-    return userExists ? true : false
+  const userExists = await prisma.user.findFirst({
+    where: {
+      email: email
+    }
+  })
+  return userExists ? true : false
 }
 
 export async function createAccout(data: signUpCredentials) {
+  try {
     await prisma.auth.create({
       data: {
-        username: data.username,
         email: data.email,
         hashpassword: data.password,
         saltkey: data.saltKey as string,
       },
-    })
+    }).then(async (e) => 
+      await prisma.user.create({
+        data: {
+          username: data.username,
+          email: data.email,
+          authId: e.id 
+        },
+      })
+    )
+  } catch (error) {
+    
+  }
 }
 
 export async function getAccountFull(data: signInCredentials) {
-    const account = await prisma.auth.findFirst({
-        where: {
-          email: data.email
-        }
-    })
-    return account
+  const account = await prisma.auth.findFirst({
+    where: {
+      email: data.email
+    }
+  })
+  return account
 }
 
 export async function setAccessToken(data: signInCredentials, accessToken: string) {
-    await prisma.session.create({
-      data: {
-        userId: data.id as string,
-        token: accessToken
-      },
-    })
+  await prisma.session.create({
+    data: {
+      authId: data.id as string,
+      token: accessToken
+    },
+  })
 }

@@ -9,7 +9,6 @@ import { accessTokenCreator, handleSignIn } from './signIn';
 
 export async function Routes() {
     const id = uuidv4();
-
     app.get('/', (req, res) => {
         res.send('<h1>Welcome!</h1>');
     });
