@@ -31,7 +31,7 @@ export async function createValidateCode() {
 
 export async function cleanValidateCode() {
     let timer = setTimeout(() => {
-        redisClient.del('validationCode')
+      redisClient.del('validationCode')
     }, 60 * 1000) // 60 seconds
     return timer
 }

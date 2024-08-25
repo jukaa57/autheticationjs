@@ -2,7 +2,7 @@ import { prisma } from './shared/connections';
 import { signInCredentials, signUpCredentials } from './shared/interfaces.d';
 
 export async function userExists(email: string) {
-  const userExists = await prisma.user.findFirst({
+  const userExists = await prisma.user.findUnique({
     where: {
       email: email
     }
@@ -33,7 +33,7 @@ export async function createAccout(data: signUpCredentials) {
 }
 
 export async function getAccountFull(data: signInCredentials) {
-  const account = await prisma.auth.findFirst({
+  const account = await prisma.auth.findUnique({
     where: {
       email: data.email
     }

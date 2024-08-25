@@ -7,10 +7,10 @@ A complete authentication flow with login creation, sending confirmation email, 
 
 [x] create db connection
 [x] validate credentials before save
-[] check if validate code expired in 60 seconds
-[] save and refresh validate code in database temp
+[x] check if validate code expired in 60 seconds
+[x] save and refresh validate code in database temp
 [x] send email of confirmation with validate code
-[] redirect to page of confirm code
-[] check if validate code is equal to code in request
+[x] redirect to page of confirm code
+[x] check if validate code is equal to code in request
 [x] Create hash and saltKey 
 [x] save password-hash and saltKey

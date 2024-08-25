@@ -18,11 +18,11 @@ model Auth {
   email        String    @unique
   hashpassword String
   saltkey      String
-  created_at   DateTime  @default(now())
   twofactors   String?
+  created_at   DateTime  @default(now())
+  update_at    DateTime?
   Session      Session[]
   User         User[]
-  update_at    DateTime?
 }
 
 model User {
