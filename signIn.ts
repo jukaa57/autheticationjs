@@ -1,7 +1,7 @@
 import { signInCredentials, signUpCredentials } from "./shared/interfaces";
 import cryptoJs from 'crypto-js'
 import { getAccountFull, setAccessToken } from "./actions";
-import { createValidateCode, now, sendEmailSignUpValidation } from "./shared/util";
+import { createValidateCode, now, sendEmailSignUpValidation, sendTwoFactorValidation } from "./shared/util";
 import { redisClient } from "./shared/connections";
 
 export async function handleSignIn(data: signInCredentials) {
@@ -13,7 +13,7 @@ export async function handleSignIn(data: signInCredentials) {
             const validationCode = await redisClient.get('validationCode');
             // NEED to change this key parameter
             redisClient.hSet(`signin:${validationCode}`, {'id': getAccount.id, 'email':getAccount.email})
-            let send = sendEmailSignUpValidation(data.email, validationCode)
+            let send = sendTwoFactorValidation(data.email, validationCode)
             return send
         } else {
             accessTokenCreator(getAccount)
@@ -22,7 +22,6 @@ export async function handleSignIn(data: signInCredentials) {
     } else {
         return 500
     }
-
 }
 
 async function HashComparator(password: string, data: any ) {
